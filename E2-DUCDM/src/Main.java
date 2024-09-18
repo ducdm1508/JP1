@@ -26,6 +26,7 @@ public class Main {
         };
         for (Employee employee : employees) {
             System.out.println(employee);
+            System.out.println("Annual salaty is: " + employee.getAnnulSalary());
         }
 
         Employee maxSalary = employees[0];
