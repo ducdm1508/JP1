@@ -14,10 +14,11 @@ public class AccController {
         AccController.accounts = accounts;
     }
 
-    public static List<Account> getAccountsById(String id) {
-        return accounts.stream()
+    public Optional<Account> getAccountsById(String id) {
+        Optional<Account> getAccId = accounts.stream()
                 .filter(account -> Integer.toString(account.getId()).equals(id))
-                .toList();
+                .findFirst();
+        return getAccId;
     }
     public static List<Account> getAccountsByName(String name) {
         return accounts.stream()

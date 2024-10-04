@@ -9,6 +9,7 @@ import Entity.Invoice;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
@@ -46,55 +47,68 @@ public class Main {
         System.out.println("3. là thanh toán");
         System.out.println("4. là giảm giá");
         System.out.println("5. là search");
+        System.out.println("0. exit");
         System.out.printf("Choice: ");
 
-        int choice = scanner.nextInt();
-        switch (choice){
-            case 1:
-                customers.forEach(System.out::println);
-                accounts.forEach(System.out::println);
-                invoices.forEach(System.out::println);
-                break;
-            case 2:
-                CustomerController.sortCustomersByName(customers).forEach(System.out::println);
-                break;
-            case 3:
-                System.out.println("Khách hàng có số dư đủ thanh toán:");
-                accounts.forEach(account ->
-                        invoices.stream()
-                                .filter(invoice -> invoice.getCustomer().equals(account.getCustomer()))
-                                .filter(invoice -> account.getBalance() >= invoice.getAmountAfterDiscount())
-                                .forEach(invoice -> System.out.println(", Account: " + account)));
-
-                System.out.println("\nKhách hàng không đủ số dư thanh toán:");
-                accounts.forEach(account ->
-                        invoices.stream()
-                                .filter(invoice -> invoice.getCustomer().equals(account.getCustomer()))
-                                .filter(invoice -> account.getBalance() < invoice.getAmount())
-                                .forEach(invoice -> System.out.println(", Account: " + account)));
-                break;
-            case 4:
-                invoices.stream()
-                        .filter(invoice -> invoice.getDatetime().isBefore(LocalDate.now().minusMonths(8)))
-                        .filter(invoice -> invoice.getCustomer().getGender() == Gender.F)
-                        .forEach(invoice ->{
-                            double discount = invoice.getCustomer().getDiscount() + 10;
-                            invoice.setAmount(invoice.getAmount() - discount);
-                            System.out.println(invoice);
-                        });
-                break;
-            case 5:
-                System.out.print("Nhập id hoặc tên để tìm kiếm: ");
-                scanner.nextLine();
-                String searchKey = scanner.nextLine();
-                AccController.getAccountsById(searchKey).forEach(System.out::println);
-                AccController.getAccountsByName(searchKey).forEach(System.out::println);
-
-                InvController.getInvoicesId(searchKey).forEach(System.out::println);
-                InvController.getInvoiceName(searchKey).forEach(System.out::println);
-                break;
-                default:
+        int choice = 1;
+        while (choice != 0){
+            choice = scanner.nextInt();
+            switch (choice){
+                case 1:
+                    customers.forEach(System.out::println);
+                    accounts.forEach(System.out::println);
+                    invoices.forEach(System.out::println);
+                    System.out.println("choice");
                     break;
+                case 2:
+                    CustomerController.sortCustomersByName(customers).forEach(System.out::println);
+                    System.out.println("choice");
+                    break;
+                case 3:
+                    System.out.println("Khách hàng có số dư đủ thanh toán:");
+                    accounts.forEach(account ->
+                            invoices.stream()
+                                    .filter(invoice -> invoice.getCustomer().equals(account.getCustomer()))
+                                    .filter(invoice -> account.getBalance() >= invoice.getAmountAfterDiscount())
+                                    .forEach(invoice -> System.out.println(", Account: " + account)));
+
+                    System.out.println("\nKhách hàng không đủ số dư thanh toán:");
+                    accounts.forEach(account ->
+                            invoices.stream()
+                                    .filter(invoice -> invoice.getCustomer().equals(account.getCustomer()))
+                                    .filter(invoice -> account.getBalance() < invoice.getAmount())
+                                    .forEach(invoice -> System.out.println(", Account: " + account)));
+                    System.out.println("choice");
+                    break;
+                case 4:
+                    invoices.stream()
+                            .filter(invoice -> invoice.getDatetime().isBefore(LocalDate.now().minusMonths(8)))
+                            .filter(invoice -> invoice.getCustomer().getGender() == Gender.F)
+                            .forEach(invoice ->{
+                                double discount = invoice.getCustomer().getDiscount() + 10;
+                                invoice.setAmount(invoice.getAmount() - discount);
+                                System.out.println(invoice);
+                            });
+                    System.out.println("choice");
+                    break;
+                case 5:
+                    System.out.print("Nhập id hoặc tên để tìm kiếm: ");
+                    scanner.nextLine();
+                    String searchKey = scanner.nextLine();
+                    Optional<Account> foundAcc = accController.getAccountsById(searchKey);
+                    foundAcc.ifPresent(System.out::println);
+                    accController.getAccountsByName(searchKey).forEach(System.out::println);
+
+                    Optional<Invoice> foundInvoice = invController.getInvoicesId(searchKey);
+                    foundInvoice.ifPresent(System.out::println);
+                    InvController.getInvoiceName(searchKey).forEach(System.out::println);
+                    System.out.println("choice");
+                    break;
+                case 0:
+                    break;
+                default:
+                    System.out.println("Lựa chọn không hợp lệ. Vui lòng thử lại: ");
+            }
         }
     }
 }

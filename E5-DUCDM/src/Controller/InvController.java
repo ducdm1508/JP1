@@ -3,6 +3,7 @@ package Controller;
 import Entity.Invoice;
 
 import java.util.List;
+import java.util.Optional;
 
 public class InvController {
     public static List<Invoice> invoices;
@@ -10,10 +11,11 @@ public class InvController {
     public InvController (List<Invoice> invoices) {
         InvController.invoices = invoices;
     }
-    public static List<Invoice> getInvoicesId(String id) {
-        return invoices.stream()
+    public Optional<Invoice> getInvoicesId(String id) {
+        Optional <Invoice> getInvId = invoices.stream()
                 .filter(account -> Integer.toString(account.getId()).equals(id))
-                .toList();
+                .findFirst();
+        return getInvId;
     }
     public static List<Invoice> getInvoiceName(String name) {
         return invoices.stream()
