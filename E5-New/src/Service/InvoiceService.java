@@ -45,15 +45,51 @@ public class InvoiceService {
     public List<Invoice> applyDiscountForFemaleAugustInvoices() {
         List<Invoice> discountedInvoices = invoices.stream()
                 .filter(inv -> inv.getCustomer().getGender() == Gender.F)
-                .filter(inv -> inv.getDatetime().isBefore(LocalDate.now().minusMonths(8)))
+                .filter(inv -> inv.getDatetime().getMonthValue() == 8)
                 .toList();
 
         discountedInvoices.forEach(inv -> {
             double discount = inv.getCustomer().getDiscount() + 10;
-            inv.setAmount(inv.getAmount() * (1 - discount/100));
+            inv.setAmount(inv.getAmount() * (1 - discount / 100));
         });
         if (discountedInvoices.size() > 0) {
             return discountedInvoices;
+        } else {
+            return null;
+        }
+    }
+
+    public List<Invoice> getCusCanNotPay(List<Account> accounts) {
+        List<Invoice> cusCanNotPay = new ArrayList<>();
+
+        accounts.forEach(account -> {
+            List<Invoice> unpayableInvoices = invoices.stream()
+                    .filter(inv -> inv.getCustomer().equals(account.getCustomer()))
+                    .filter(invoice -> account.getBlance() < invoice.getAmountAfterDiscount())
+                    .toList();
+            cusCanNotPay.addAll(unpayableInvoices);
+        });
+
+        if (cusCanNotPay.size() > 0) {
+            return cusCanNotPay;
+        } else {
+            return null;
+        }
+    }
+
+    public List<Invoice> getCusCanPay(List<Account> accounts) {
+        List<Invoice> cusCanNotPay = new ArrayList<>();
+
+        accounts.forEach(account -> {
+            List<Invoice> unpayableInvoices = invoices.stream()
+                    .filter(inv -> inv.getCustomer().equals(account.getCustomer()))
+                    .filter(invoice -> account.getBlance() >= invoice.getAmountAfterDiscount())
+                    .toList();
+            cusCanNotPay.addAll(unpayableInvoices);
+        });
+
+        if (cusCanNotPay.size() > 0) {
+            return cusCanNotPay;
         }else {
             return null;
         }
