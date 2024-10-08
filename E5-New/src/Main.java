@@ -90,8 +90,25 @@ public class Main {
             System.out.println(getInvByNames);
         }
 
-        List<Invoice> discounted = is.applyDiscountForFemaleAugustInvoices();
-            discounted.forEach(System.out::println);
+        List<Invoice> discounted = it.applyDiscountForFemaleAugustInvoices();
+        if (discounted == null) {
+            System.out.println("Invoice not found");
+        }else {
+            System.out.println(discounted);
+        }
 
+        List<Invoice> listCanNotPay = it.getCusCanNotPay(accounts);
+        if (listCanNotPay != null) {
+            listCanNotPay.forEach(System.out::println);
+        }else {
+            System.out.println("No list");
+        }
+
+        List<Invoice> listCanPay = it.getCusCanPay(accounts);
+        if (listCanPay != null) {
+            listCanPay.forEach(System.out::println);
+        }else {
+            System.out.println("No list");
+        }
     }
 }

@@ -4,34 +4,39 @@ import Entity.Account;
 import Entity.Invoice;
 import Service.InvoiceService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class InvoiceController {
 
-    private List<Invoice> invoices;
-    private Invoice invoice;
     private InvoiceService is;
 
     public InvoiceController(InvoiceService is) {
         this.is = is;
     }
 
-    public Invoice getInvoiceById(int id) {
-        Invoice found = is.getInvoiceId(id);
-        if (found == null) {
+    public List<Invoice> update(Invoice invoice) {
+        return is.update(invoice);
+    }
+
+    public List<Invoice> sort() {
+        return is.sort();
+    }
+
+    public Invoice getById(int id) {
+        Invoice findId = is.getById(id);
+        if (findId != null) {
+            return findId;
+        } else {
             return null;
-        }else {
-            return found;
         }
     }
 
-    public List<Invoice> getInvoicesByName(String name) {
-        List<Invoice> found = is.getInvoiceByName(name);
-        if (found == null) {
+    public List<Invoice> getByName(String name) {
+        List<Invoice> findName = is.getByName(name);
+        if (findName != null) {
+            return findName;
+        } else {
             return null;
-        }else {
-            return found;
         }
     }
     public List<Invoice> applyDiscountForFemaleAugustInvoices(){

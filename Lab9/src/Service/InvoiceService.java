@@ -4,41 +4,56 @@ import Entity.Account;
 import Entity.Gender;
 import Entity.Invoice;
 import Global.Global;
+import IGeneric.IGeneral;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-public class InvoiceService {
+public class InvoiceService implements IGeneral<Invoice> {
 
     private List<Invoice> invoices;
+
     public InvoiceService(List<Invoice> invoices) {
         this.invoices = invoices;
     }
 
-    public Invoice getInvoiceId(int id) {
-        Optional<Invoice> findInv =
-                invoices.stream()
-                        .filter(i -> i.getId() == id)
-                        .findFirst();
+    @Override
+    public List<Invoice> update(Invoice invoice) {
+        invoices.removeIf(inv -> inv.getId() == invoice.getId());
+        invoices.add(invoice);
+        return new ArrayList<>(invoices);
+    }
+
+    @Override
+    public List<Invoice> sort() {
+        return invoices.stream()
+                .sorted(Comparator.comparing(Invoice::getAmount))
+                .toList();
+    }
+
+    @Override
+    public Invoice getById(int id) {
+        Optional<Invoice> findInv = invoices.stream()
+                .filter(inv -> inv.getCustomer().getId() == id)
+                .findFirst();
         if (findInv.isPresent()) {
             return findInv.get();
-
-        }else {
+        } else {
             return null;
         }
     }
 
-    public List<Invoice> getInvoiceByName(String name) {
-
+    @Override
+    public List<Invoice> getByName(String keyword) {
         List<Invoice> findInv = invoices.stream()
-                .filter(inv -> Global.ignoreCase(inv.getCusName(), name))
+                .filter(inv -> Global.ignoreCase(inv.getCusName(), keyword))
                 .toList();
-
-        if (findInv.size() >0 ) {
+        if (findInv.size() > 0) {
             return findInv;
-        }else {
+        } else {
             return null;
         }
     }
@@ -66,7 +81,7 @@ public class InvoiceService {
         accounts.forEach(account -> {
             List<Invoice> unpayableInvoices = invoices.stream()
                     .filter(inv -> inv.getCustomer().equals(account.getCustomer()))
-                    .filter(invoice -> account.getBalance() < invoice.getAmountAfterDiscount())
+                    .filter(invoice -> account.getBlance() < invoice.getAmountAfterDiscount())
                     .toList();
             cusCanNotPay.addAll(unpayableInvoices);
         });
@@ -84,7 +99,7 @@ public class InvoiceService {
         accounts.forEach(account -> {
             List<Invoice> unpayableInvoices = invoices.stream()
                     .filter(inv -> inv.getCustomer().equals(account.getCustomer()))
-                    .filter(invoice -> account.getBalance() >= invoice.getAmountAfterDiscount())
+                    .filter(invoice -> account.getBlance() >= invoice.getAmountAfterDiscount())
                     .toList();
             cusCanNotPay.addAll(unpayableInvoices);
         });
