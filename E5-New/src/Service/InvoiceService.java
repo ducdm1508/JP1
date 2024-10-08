@@ -66,7 +66,11 @@ public class InvoiceService {
         accounts.forEach(account -> {
             List<Invoice> unpayableInvoices = invoices.stream()
                     .filter(inv -> inv.getCustomer().equals(account.getCustomer()))
+<<<<<<< HEAD
                     .filter(invoice -> account.getBalance() < invoice.getAmountAfterDiscount())
+=======
+                    .filter(invoice -> account.getBlance() < invoice.getAmountAfterDiscount())
+>>>>>>> 3e5ea4afe43f2df485cc3e0318a4e6114beb1a57
                     .toList();
             cusCanNotPay.addAll(unpayableInvoices);
         });
@@ -84,7 +88,11 @@ public class InvoiceService {
         accounts.forEach(account -> {
             List<Invoice> unpayableInvoices = invoices.stream()
                     .filter(inv -> inv.getCustomer().equals(account.getCustomer()))
+<<<<<<< HEAD
                     .filter(invoice -> account.getBalance() >= invoice.getAmountAfterDiscount())
+=======
+                    .filter(invoice -> account.getBlance() >= invoice.getAmountAfterDiscount())
+>>>>>>> 3e5ea4afe43f2df485cc3e0318a4e6114beb1a57
                     .toList();
             cusCanNotPay.addAll(unpayableInvoices);
         });
